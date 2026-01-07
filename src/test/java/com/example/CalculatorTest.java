@@ -25,4 +25,9 @@ public class CalculatorTest {
         assertFalse(calc.isPositive(-1));
         assertFalse(calc.isPositive(0));
     }
+
+    @Test
+    void testMainMethod() {
+        Calculator.main(new String[]{});
+    }
 }
