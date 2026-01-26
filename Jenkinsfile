@@ -9,7 +9,7 @@ pipeline{
         stage("sonar Analysis"){
             steps{
                 withSonarQubeEnv("sonar-k8s"){
-                    sh ''' mvn clean package sonar:sonar
+                    sh ''' mvn clean install sonar:sonar
                       '''
                 }
             }
