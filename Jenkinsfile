@@ -1,4 +1,4 @@
-pipeline{
+ripipeline{
     agent any
     stages{
         stage("SCM"){
@@ -9,7 +9,7 @@ pipeline{
         stage("sonar Analysis"){
             steps{
                 withSonarQubeEnv("sonar-k8s"){
-                    sh ''' mvn clean package sonar:sonar \
+                    sh ''' mvn clean verify sonar:sonar \
                           -DSonar.ProjectKey= "class-assign" 
                       '''
                 }
