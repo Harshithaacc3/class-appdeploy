@@ -10,8 +10,8 @@ pipeline{
             steps{
                 withSonarQubeEnv("sonar-k8s"){
                     sh ''' mvn clean package sonar:sonar \
-                          -DSonar.ProjectKey= "class-assign" \
-                          -Dsonar.ProjectName = "class-assign" '''
+                          -DSonar.ProjectKey= "class-assign" 
+                      '''
                 }
             }
         }
