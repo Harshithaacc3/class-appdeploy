@@ -9,8 +9,7 @@ pipeline{
         stage("sonar Analysis"){
             steps{
                 withSonarQubeEnv("sonar-k8s"){
-                    sh ''' mvn clean package sonar:sonar \
-                          -DSonar.ProjectKey= "class-assign" 
+                    sh ''' mvn clean package sonar:sonar
                       '''
                 }
             }
