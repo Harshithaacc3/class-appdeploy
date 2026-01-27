@@ -1,7 +1,7 @@
 pipeline{
     agent { label "node2" }
     environment{
-        version = 1.0.${env.BUILD_NUMBER}
+        version = "1.0.${env.BUILD_NUMBER}"
     }
     stages{
         stage("SCM"){
