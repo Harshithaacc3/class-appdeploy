@@ -33,13 +33,13 @@ pipeline{
           }
        }
        stage("Deploy to ec2"){
-           agent {label "node3"}
            steps{
-               withAWS(credentials: 'jenkins-ecr', region: 'eu-north-1') {
-               sh """ aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 429219761476.dkr.ecr.eu-north-1.amazonaws.com
+               
+               sh """
+                     ssh ubuntu@13.61.184.148 "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 429219761476.dkr.ecr.eu-north-1.amazonaws.com
                       docker pull 429219761476.dkr.ecr.eu-north-1.amazonaws.com/class-assign:1.0.0
-                      docker run -it -d 429219761476.dkr.ecr.eu-north-1.amazonaws.com/class-assign:1.0.0 """
-               }
+                      docker run -it -d 429219761476.dkr.ecr.eu-north-1.amazonaws.com/class-assign:1.0.0" """
+               
            }
        }
     
