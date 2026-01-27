@@ -30,7 +30,15 @@ pipeline{
                       aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 429219761476.dkr.ecr.eu-north-1.amazonaws.com
                       docker push 429219761476.dkr.ecr.eu-north-1.amazonaws.com/class-assign:1.0.0 """
            }
+          }
+       }
+       stage("Deploy to ec2"){
+           steps{
+              sh """ 
+                 scp target/class-assign-1.0-SNAPSHOT.jar ubuntu@13.61.184.148:/home/ubuntu
+              """
            }
+       }
        }
     }
 }
