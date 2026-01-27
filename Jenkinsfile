@@ -36,7 +36,7 @@ pipeline{
            steps{
               sh """ 
                  scp target/class-assign-1.0-SNAPSHOT.jar ubuntu@13.61.184.148:/home/ubuntu
-                 ssh ubuntu@13.61.184.148 "nohup java -jar class-assign-1.0-SNAPSHOT.jar"
+                 ssh ubuntu@13.61.184.148 " nohup java -jar class-assign-1.0-SNAPSHOT.jar "
               """
            }
        }
