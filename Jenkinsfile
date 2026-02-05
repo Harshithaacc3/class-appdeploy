@@ -22,15 +22,21 @@ pipeline {
 
         stage('Sonar Analysis') {
             steps {
-                withSonarQubeEnv('sonarcreds') {
-                    sh 'mvn clean verify sonar:sonar'
+                withSonarQubeEnv('sonarcreds') 
+                {
+                   sh '''
+                    mvn clean verify sonar:sonar \
+                           -DSonar.Projectkey="class-appdeploy"
+                   '''
                 }
             }
         }
 
         stage('Docker Image Build') {
             steps {
-                sh "docker build -t class-appdeploy:${version} ."
+               sh '''
+               docker build -t class-appdeploy:${version} .
+               '''
             }
         }
 
