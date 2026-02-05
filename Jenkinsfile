@@ -56,7 +56,7 @@ pipeline {
         stage('Deploy to EC2') {
           steps {
             sh """
-             ssh -o StrictHostKeyChecking=no ubuntu@3.110.223.49 << EOF
+             ssh -o StrictHostKeyChecking=no ubuntu@3.110.223.49
             set -e
 
             aws ecr get-login-password --region ap-south-1 \
@@ -71,7 +71,6 @@ pipeline {
               -p 80:8080 \
               --restart unless-stopped \
               671669616800.dkr.ecr.ap-south-1.amazonaws.com/class-appdeploy:${version}
-              EOF
         """
     }
 }
