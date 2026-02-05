@@ -22,7 +22,8 @@ pipeline {
 
         stage('Sonar Analysis') {
             steps {
-                withSonarQubeEnv('sonarcreds') {
+                withSonarQubeEnv('sonarcreds') 
+                {
                     sh '''
                     mvn clean verify sonar:sonar \
                       -Dsonar.projectKey=class-appdeploy
