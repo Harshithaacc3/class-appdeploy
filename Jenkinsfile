@@ -57,16 +57,12 @@ pipeline {
         {
     steps 
      {
-         sshagent(credentials: ['ec2-user-ppk']) 
-         {
          sh '''
-              ssh -o StrictHostKeyChecking=no ubuntu@3.110.223.49 << EOF
-                aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 671669616800.dkr.ecr.ap-south-1.amazonaws.com
-                docker pull 671669616800.dkr.ecr.ap-south-1.amazonaws.com/class-appdeploy:${version}
-                docker run -it -d 671669616800.dkr.ecr.ap-south-1.amazonaws.com/class-appdeploy:${version}
-              EOF
+              ssh ubuntu@3.110.223.49
+              aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 671669616800.dkr.ecr.ap-south-1.amazonaws.com
+              docker pull 671669616800.dkr.ecr.ap-south-1.amazonaws.com/class-appdeploy:${version}
+              docker run -it -d 671669616800.dkr.ecr.ap-south-1.amazonaws.com/class-appdeploy:${version}
             '''
-        }
     }
         }
 
