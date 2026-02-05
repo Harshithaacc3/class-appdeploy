@@ -22,21 +22,20 @@ pipeline {
 
         stage('Sonar Analysis') {
             steps {
-                withSonarQubeEnv('sonarcreds') 
-                {
-                   sh '''
+                withSonarQubeEnv('sonarcreds') {
+                    sh '''
                     mvn clean verify sonar:sonar \
-                           -DSonar.Projectkey="class-appdeploy"
-                   '''
+                      -Dsonar.projectKey=class-appdeploy
+                    '''
                 }
             }
         }
 
         stage('Docker Image Build') {
             steps {
-               sh '''
-               docker build -t class-appdeploy:${version} .
-               '''
+                sh '''
+                docker build -t class-appdeploy:${version} .
+                '''
             }
         }
 
@@ -44,10 +43,13 @@ pipeline {
             steps {
                 withAWS(credentials: 'ecr-user', region: "${AWS_REGION}") {
                     sh """
-                    aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${ECR_REPO}
+                    aws ecr get-login-password --region ${AWS_REGION} \
+                      | docker login --username AWS --password-stdin ${ECR_REPO}
                     docker tag class-appdeploy:${version} ${ECR_REPO}:${version}
                     docker push ${ECR_REPO}:${version}
                     """
                 }
             }
         }
+    }
+}
