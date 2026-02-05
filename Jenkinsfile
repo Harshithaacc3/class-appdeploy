@@ -71,7 +71,7 @@ pipeline {
               -p 80:8080 \
               --restart unless-stopped \
               671669616800.dkr.ecr.ap-south-1.amazonaws.com/class-appdeploy:${version}
-          EOF
+              EOF
         """
     }
 }
