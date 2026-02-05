@@ -1,50 +1,47 @@
-pipeline{
-    agent { label "node2" }
-    environment{
-        version = "1.0.${env.BUILD_NUMBER}"
+pipeline {
+    agent any
+
+    tools {
+        maven 'M3'
     }
-    stages{
-        stage("SCM"){
-            steps{
-                git branch: "main", url: "https://github.com/Agasthyahm/class-assign.git"
+
+    environment {
+        version = "1.0.${BUILD_NUMBER}"
+        ECR_REPO = "671669616800.dkr.ecr.ap-south-1.amazonaws.com/class-appdeploy"
+        AWS_REGION = "ap-south-1"
+    }
+
+    stages {
+
+        stage('GIT SCM') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Harshithaacc3/class-appdeploy.git'
             }
         }
-        stage("sonar Analysis"){
-            steps{
-                withSonarQubeEnv("sonar-k8s"){
-                    sh ''' mvn clean verify sonar:sonar \
-                           -DSonar.Projectkey="class-assign"
-                      '''
+
+        stage('Sonar Analysis') {
+            steps {
+                withSonarQubeEnv('sonarcreds') {
+                    sh 'mvn clean verify sonar:sonar'
                 }
             }
         }
-        stage("Docker build"){
-            steps{
-                sh """  
-                docker build -t class-assign:${version} .
-                """
+
+        stage('Docker Image Build') {
+            steps {
+                sh "docker build -t class-appdeploy:${version} ."
             }
         }
-       stage("Tag and push to ECR"){
-           steps{
-            withAWS(credentials: 'jenkins-ecr', region: 'eu-north-1') {
 
-               sh """ docker tag class-assign:${version} 429219761476.dkr.ecr.eu-north-1.amazonaws.com/class-assign:${version}
-                      aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 429219761476.dkr.ecr.eu-north-1.amazonaws.com
-                      docker push 429219761476.dkr.ecr.eu-north-1.amazonaws.com/class-assign:${version} """
-           }
-          }
-       }
-       stage("Deploy to ec2"){
-           steps{
-               
-               sh """
-                     ssh ubuntu@13.61.184.148 "aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 429219761476.dkr.ecr.eu-north-1.amazonaws.com
-                      docker pull 429219761476.dkr.ecr.eu-north-1.amazonaws.com/class-assign:${version}
-                      docker run -it -d 429219761476.dkr.ecr.eu-north-1.amazonaws.com/class-assign:${version}" """
-               
-           }
-       }
-    
-    }
-}
+        stage('Push to ECR') {
+            steps {
+                withAWS(credentials: 'ecr-user', region: "${AWS_REGION}") {
+                    sh """
+                    aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${ECR_REPO}
+                    docker tag class-appdeploy:${version} ${ECR_REPO}:${version}
+                    docker push ${ECR_REPO}:${version}
+                    """
+                }
+            }
+        }
