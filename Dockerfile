@@ -1,10 +1,7 @@
-FROM maven:3.9-eclipse-temurin-21 as builder
+FROM maven:3.9.6-eclipse-temurin-17
 WORKDIR /app
-COPY pom.xml pom.xml
-COPY src /src
-RUN mvn install 
-
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
-CMD ["java","-jar","app.jar"]
+COPY /src/main /app
+COPY pom.xml /app
+RUN mvn clean package && \
+    cp target/string-utils-1.0-SNAPSHOT.jar app.jar
+CMD ["java", "-jar", "/app/japp.jar"]
